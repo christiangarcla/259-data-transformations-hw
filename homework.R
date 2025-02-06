@@ -1,7 +1,8 @@
 #PSYC 259 Homework 2 - Data Transformation
 #For full credit, provide answers for at least 7/10
 
-#List names of students collaborating with: 
+#List names of students collaborating with:
+#Christian Garcia
 
 ### SETUP: RUN THIS BEFORE STARTING ----------
 
@@ -17,6 +18,12 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+glimpse(ds)
+
+ds <- as.numeric(ds$Year)
+
+typeof(ds)
+
 
 ### Question 2 ---------- 
 
@@ -25,6 +32,12 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+library(janitor)
+
+ds <- ds %>% clean_names()
+
+view(ds)
+
 ### Question 3 ----------
 
 # Use mutate to create a new variable in ds that has the decade of the year as a number
@@ -32,6 +45,17 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 # Hint: read the documentation for ?floor
 
 #ANSWER
+
+# Mutate and summarize
+
+ds$year <- as.numeric(ds$year)
+
+glimpse(ds)
+
+ds <- ds %>% 
+  select(year) %>% 
+  mutate(decade = floor(year))
+
 
 ### Question 4 ----------
 
