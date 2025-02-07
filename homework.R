@@ -20,10 +20,9 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 glimpse(ds)
 
-ds <- as.numeric(ds$Year)
+ds$Year <- as.numeric(ds$Year)
 
-typeof(ds)
-
+typeof(ds$Year)
 
 ### Question 2 ---------- 
 
@@ -32,9 +31,8 @@ typeof(ds)
 
 #ANSWER
 
-library(janitor)
-
-ds <- ds %>% clean_names()
+ds <- ds %>% rename(rank = Rank, song = Song,
+                    artist = Artist, year = Year)
 
 view(ds)
 
@@ -48,13 +46,12 @@ view(ds)
 
 # Mutate and summarize
 
-ds$year <- as.numeric(ds$year)
-
-glimpse(ds)
-
+#first way
 ds <- ds %>% 
-  select(year) %>% 
   mutate(decade = floor(year))
+
+#second way
+ds$decade <- floor(ds$year)
 
 
 ### Question 4 ----------
@@ -63,6 +60,13 @@ ds <- ds %>%
 
 #ANSWER
 
+ds$rank <- as.character(ds$rank)
+
+str(ds)
+
+ds <- arrange(desc(rank))
+
+
 ### Question 5 ----------
 
 # Use filter and select to create a new tibble called 'top10'
@@ -70,6 +74,8 @@ ds <- ds %>%
 
 #ANSWER
 
+select(ds, rank) 
+filter(ds, rank >11)
 
 ### Question 6 ----------
 
@@ -77,6 +83,10 @@ ds <- ds %>%
 # of all songs on the full list. Save it to a new tibble called "ds_sum"
 
 #ANSWER
+
+ds_sum <- ds %>% summarize(earliest = min(year, na.rm = T),
+                 most_recent = max(year, na.rm = T),
+                 average = mean(year, na.rm = T))
 
 
 ### Question 7 ----------
@@ -86,6 +96,7 @@ ds <- ds %>%
 # Use one filter command only, and sort the responses by year
 
 #ANSWER
+
 
 
 ### Question 8 ---------- 
