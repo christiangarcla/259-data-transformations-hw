@@ -18,11 +18,14 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+#attempt 1
 glimpse(ds)
 
 ds$Year <- as.numeric(ds$Year)
 
 typeof(ds$Year)
+
+#the numeric and tyepof function work but I've introduced some NAs because it seems some value contain quotation marks
 
 ### Question 2 ---------- 
 
@@ -31,6 +34,7 @@ typeof(ds$Year)
 
 #ANSWER
 
+#attempt 1
 ds <- ds %>% rename(rank = Rank, song = Song,
                     artist = Artist, year = Year)
 
@@ -53,6 +57,7 @@ ds <- ds %>%
 #second way
 ds$decade <- floor(ds$year)
 
+#both of my attmepts failed I got an error that floor() can't be used with numeric or character variables not sure what's going wrong
 
 ### Question 4 ----------
 
@@ -60,12 +65,16 @@ ds$decade <- floor(ds$year)
 
 #ANSWER
 
+#attempt 1
 ds$rank <- as.character(ds$rank)
 
 str(ds)
 
 ds <- arrange(desc(rank))
 
+
+#attempt 2 based on error
+ds <- arrange(desc(ds$rank))
 
 ### Question 5 ----------
 
@@ -74,8 +83,17 @@ ds <- arrange(desc(rank))
 
 #ANSWER
 
-select(ds, rank) 
+#attempt 1
+top10 < - select(ds, rank) 
 filter(ds, rank >11)
+
+#attempt 2
+top10 <- select(ds, rank, artist, song)
+top10
+top10 <- filter(top10, rank < 11)
+top10
+
+#hmmm feels like I could optimize this
 
 ### Question 6 ----------
 
@@ -84,10 +102,12 @@ filter(ds, rank >11)
 
 #ANSWER
 
+#attempt 1
 ds_sum <- ds %>% summarize(earliest = min(year, na.rm = T),
                  most_recent = max(year, na.rm = T),
                  average = mean(year, na.rm = T))
 
+#I think I'm on the right track I assume earliest means the min and most recent refers to max
 
 ### Question 7 ----------
 
