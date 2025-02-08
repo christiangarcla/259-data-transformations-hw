@@ -117,8 +117,14 @@ ds_sum <- ds %>% summarize(earliest = min(year, na.rm = T),
 
 #ANSWER
 
+#attempt 1
 
+ds_sum <- ds_sum %>%
+  filter(year) %>% 
+  arrange(year) %>% 
 
+#hmmmm something is missing   
+  
 ### Question 8 ---------- 
 
 # There's and error here. The oldest song "Brass in Pocket"
