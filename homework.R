@@ -1,5 +1,5 @@
 #PSYC 259 Homework 2 - Data Transformation
-#For full credit, provide answers for at least 7/10
+#For full credit, provide answers for at least 7/10 (7/10)
 
 #List names of students collaborating with:
 #Christian Garcia
@@ -27,6 +27,9 @@ typeof(ds$Year)
 
 #the numeric and tyepof function work but I've introduced some NAs because it seems some value contain quotation marks
 
+#Mcomment: your above function works, you can also do - 
+ds <- ds %>% mutate(Year = as.numeric(Year))
+
 ### Question 2 ---------- 
 
 # Using a dplyr function,
@@ -39,6 +42,9 @@ ds <- ds %>% rename(rank = Rank, song = Song,
                     artist = Artist, year = Year)
 
 view(ds)
+
+#Mcomment:This looks good, and see an alternative below - 
+ds <- ds %>% rename_all(tolower)
 
 ### Question 3 ----------
 
@@ -59,6 +65,10 @@ ds$decade <- floor(ds$year)
 
 #both of my attmepts failed I got an error that floor() can't be used with numeric or character variables not sure what's going wrong
 
+#Key
+ds <- ds %>% mutate(decade = floor(year/10)*10)
+
+
 ### Question 4 ----------
 
 # Sort the dataset by rank so that 1 is at the top
@@ -75,6 +85,10 @@ ds <- arrange(desc(rank))
 
 #attempt 2 based on error
 ds <- arrange(desc(ds$rank))
+
+#Mcomment: Arrange automatically goes low to high, so you shouldn't need any other functions
+ds <- ds %>% arrange(rank) #key answer
+
 
 ### Question 5 ----------
 
@@ -95,6 +109,10 @@ top10
 
 #hmmm feels like I could optimize this
 
+#Mcomment: Yeah attempt 2 works, but if you use the pipes you can run both in 1 fuction
+top10 <- ds %>% filter(rank <= 10) %>% select(artist, song) #in this scenario can be <= 10 or < 11
+
+
 ### Question 6 ----------
 
 # Use summarize to find the earliest, most recent, and average release year
@@ -108,6 +126,7 @@ ds_sum <- ds %>% summarize(earliest = min(year, na.rm = T),
                  average = mean(year, na.rm = T))
 
 #I think I'm on the right track I assume earliest means the min and most recent refers to max
+#Mcomment: yupp!
 
 ### Question 7 ----------
 
@@ -124,6 +143,18 @@ ds_sum <- ds_sum %>%
   arrange(year) %>% 
 
 #hmmmm something is missing   
+
+#Mcomment: For this question, you'd wanna use the total dataframe (ds) and then filter using the years from ds_sum
+
+#Option 1-
+ds %>% filter(year == round(ds_sum$min_yr) | 
+                year == round(ds_sum$mean_yr) | 
+                year == round(ds_sum$max_yr) ) %>% arrange(year)
+
+#Option 2 - 
+ds %>% 
+  filter(year %in% ds_sum) %>% 
+  arrange(year)
   
 ### Question 8 ---------- 
 
@@ -135,6 +166,13 @@ ds_sum <- ds_sum %>%
 
 #ANSWER
 
+#Key
+ds  <- ds %>% mutate(year = ifelse(song == "Brass in Pocket", 1979, year),
+                     decade = floor(year/10)*10) 
+ds %>% summarize(min_yr = min(year, na.rm = T),
+                 max_yr = max(year, na.rm = T),
+                 mean_yr = mean(year, na.rm = T))
+ds %>% filter(year == 1937 | year == 1980 | year == 2020) %>% arrange(year)
 
 ### Question 9 ---------
 
@@ -146,6 +184,10 @@ ds_sum <- ds_sum %>%
 
 #ANSWER
 
+#Key
+ds %>% filter(!is.na(decade)) %>% 
+  group_by(decade) %>% 
+  summarize(mean_rank = mean(rank), n_songs = n())
 
 ### Question 10 --------
 
@@ -153,6 +195,9 @@ ds_sum <- ds_sum %>%
 # Use it to count up the number of songs by decade
 # Then use slice_max() to pull the row with the most songs
 # Use the pipe %>% to string the commands together
+
+#Key
+ds %>% count(decade) %>% slice_max(n)
 
 #ANSWER
 
